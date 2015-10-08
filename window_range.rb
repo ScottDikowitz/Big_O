@@ -45,6 +45,7 @@ end
 class MinMaxStack
   Node = Struct.new(:value, :max, :min)
 
+  attr_reader :max, :min
   def initialize
     @store = []
     @max, @min = nil, nil
@@ -116,3 +117,74 @@ class StackQueue
   private
   attr_reader :bottom, :top
 end
+
+class MinMaxStackQueue
+  def initialize
+    @bottom, @top = MinMaxStack.new, MinMaxStack.new
+  end
+
+  def enqueue(val)
+    bottom.push(val)
+  end
+
+  def dequeue
+    if top.empty?
+      until bottom.empty?
+        top.push(bottom.pop)
+      end
+    end
+
+    top.pop
+  end
+
+  def size
+    bottom.size + top.size
+  end
+
+  def empty?
+    size == 0
+  end
+
+  def max
+    unless bottom.max.nil? || top.max.nil?
+      [bottom.max, top.max].max
+    else
+      bottom.max || top.max
+    end
+
+  end
+
+  def min
+    unless bottom.min.nil? || top.min.nil?
+      [bottom.min, top.min].min
+    else
+      bottom.min || top.min
+    end
+  end
+
+  private
+  attr_reader :bottom, :top
+end
+
+def windowed_max_range(array, window_size)
+  window = MinMaxStackQueue.new
+  (0...window_size).each do |i|
+    window.enqueue(array[i])
+  end
+
+  max_range = window.max - window.min
+
+  (window_size...array.length).each do |i|
+    window.enqueue(array[i])
+    window.dequeue
+    range = window.max - window.min
+    max_range = range if range > max_range
+  end
+
+  max_range
+end
+
+p windowed_max_range([1, 0, 2, 5, 4, 8], 2) == 4 # 4, 8
+p windowed_max_range([1, 0, 2, 5, 4, 8], 3) == 5 # 0, 2, 5
+p windowed_max_range([1, 0, 2, 5, 4, 8], 4) == 6 # 2, 5, 4, 8
+p windowed_max_range([1, 3, 2, 5, 4, 8], 5) == 6 # 3, 2, 5, 4, 8
