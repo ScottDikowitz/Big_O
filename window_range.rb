@@ -13,6 +13,35 @@ def windowed_max_range(array, window_size)
   current_max_range
 end
 
+class MyStack
+  def initialize
+    @store = []
+  end
+
+  def pop
+    store.pop
+  end
+
+  def push(val)
+    store.push(val)
+  end
+
+  def peek
+    store.last
+  end
+
+  def size
+    store.length
+  end
+
+  def empty?
+    store.length == 0
+  end
+
+  private
+  attr_reader :store
+end
+
 class MinMaxStack
   Node = Struct.new(:value, :max, :min)
 
