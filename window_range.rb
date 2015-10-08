@@ -13,21 +13,36 @@ def windowed_max_range(array, window_size)
   current_max_range
 end
 
-class MyStack
+class MinMaxStack
+  Node = Struct.new(:value, :max, :min)
+
   def initialize
     @store = []
+    @max, @min = nil, nil
   end
 
   def pop
-    store.pop
+    node = store.pop
+    @max, @min = node.max, node.min
+    node.value
   end
 
   def push(val)
-    store.push(val)
+    node = Node.new(val, max, min)
+
+    if max.nil? || val > max
+      @max = val
+    end
+
+    if min.nil? || val < min
+      @min = val
+    end
+
+    store.push(node)
   end
 
   def peek
-    store.last
+    store.last.value
   end
 
   def size
