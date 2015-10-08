@@ -1,5 +1,20 @@
+def all_anagrams(str)
+  return [str] if str.length == 1
+
+  results = []
+  # first_letter = str[0]
+
+  (0...str.length).each do |i|
+    letter = str[i]
+    all_anagrams(str[0...i] + str[i + 1...str.length]).each do |anagram|
+    results << letter + anagram
+    end
+  end
+  results
+end
+
 def first_anagram?(str1, str2)
-  anagrams = str1.split('').permutation.to_a.map(&:join)
+  anagrams = all_anagrams(str1)
   anagrams.include?(str2)
 end
 
@@ -38,4 +53,4 @@ def fourth_anagram?(str1, str2)
 end
 
 p first_anagram?("gizmo", "sally")    #=> false
-p fourth_anagram?("ilevs", "lives")    #=> true
+p first_anagram?("ilevs", "lives")    #=> true
